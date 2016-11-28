@@ -32,26 +32,24 @@ battle.setup({
 });
 
 battle.on('start', function (data) {
-	var list1 = document.getElementById ('heroes');
-	data.heroes.forEach(function (character){
-		var li = document.createElement('li');
-        li.innerHTML = character + ' (<code>' + character + '</code>)';
-        li.dataset.charaid = character;
-        list1.appendChild(li);
-	})
-	var list2 = document.getElementById ('monsters');
-		data.monsters.forEach(function (character){
-		var li = document.createElement('li');
-        li.innerHTML = character + ' (<code>' + character + '</code>)';
-        li.dataset.charaid = character;
-        list2.appendChild(li);
-	})
+
     console.log('START', data);
 });
 
 battle.on('turn', function (data) {
     console.log('TURN', data);
-
+	var list;
+	//querySelector te da todos los atributos que tienen las entidades y dentro del for estamos
+	//escribiendo en el HTML todos los atributos(hp y mp) de los personajes y con el .party
+	//nos lo escribe en la columna a la que pertenecen.
+		var charlist = battle._charactersById;
+		for(var i in charlist){
+			list= document.querySelector('#' + charlist[i].party);
+			list.innerHTML += "<li>" + i  +"  (HP: " + "<strong>"+ 
+			charlist[i].hp + "</strong>" + "/" + charlist[i].maxHp +
+			", MP: " +"<strong>"+ charlist[i].mp + "</strong>" + "/" 
+			+ charlist[i].maxMp + ")"+ "</li>";
+		}
     // TODO: render the characters
     // TODO: highlight current character
     // TODO: show battle actions form
