@@ -45,7 +45,8 @@ battle.on('turn', function (data) {
     var list = Object.keys (this._charactersById);
  	var lchara = document.querySelectorAll('.character-list');
  	var render;
-	 var personaje;
+	var personaje;
+	 
  	for (var i in list){
      	personaje = this._charactersById[list[i]];
      	render = '<li data-chara- id="' + list[i] + '">' + personaje.name + '(HP: <strong>' + personaje.hp
@@ -73,7 +74,7 @@ battle.on('turn', function (data) {
     	actions.innerHTML += render;
     }
  	
- 	
+
 });
 
 battle.on('info', function (data) {
@@ -99,6 +100,9 @@ window.onload = function () {
         evt.preventDefault();
 
         // TODO: select the action chosen by the player
+        var action = actionForm.elements['option'].value;
+		battle.options.select(action);
+
         // TODO: hide this menu
         // TODO: go to either select target menu, or to the select spell menu
     });
