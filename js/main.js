@@ -32,6 +32,20 @@ battle.setup({
 });
 
 battle.on('start', function (data) {
+	var list1 = document.getElementById ('heroes');
+	data.heroes.forEach(function (character){
+		var li = document.createElement('li');
+        li.innerHTML = character + ' (<code>' + character + '</code>)';
+        li.dataset.charaid = character;
+        list1.appendChild(li);
+	})
+	var list2 = document.getElementById ('monsters');
+		data.monsters.forEach(function (character){
+		var li = document.createElement('li');
+        li.innerHTML = character + ' (<code>' + character + '</code>)';
+        li.dataset.charaid = character;
+        list2.appendChild(li);
+	})
     console.log('START', data);
 });
 
