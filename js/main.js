@@ -38,21 +38,42 @@ battle.on('start', function (data) {
 
 battle.on('turn', function (data) {
     console.log('TURN', data);
-	var list;
-	//querySelector te da todos los atributos que tienen las entidades y dentro del for estamos
-	//escribiendo en el HTML todos los atributos(hp y mp) de los personajes y con el .party
-	//nos lo escribe en la columna a la que pertenecen.
-		var charlist = battle._charactersById;
-		for(var i in charlist){
-			list= document.querySelector('#' + charlist[i].party);
-			list.innerHTML += "<li>" + i  +"  (HP: " + "<strong>"+ 
-			charlist[i].hp + "</strong>" + "/" + charlist[i].maxHp +
-			", MP: " +"<strong>"+ charlist[i].mp + "</strong>" + "/" 
-			+ charlist[i].maxMp + ")"+ "</li>";
-		}
     // TODO: render the characters
+    //querySelector te da todos los atributos que tienen las entidades y dentro del for estamos
+ 	//escribiendo en el HTML todos los atributos(hp y mp) de los personajes y con el .party
+ 	//nos lo escribe en la columna a la que pertenecen.
+    var list = Object.keys (this._charactersById);
+ 	var lchara = document.querySelectorAll('.character-list');
+ 	var render;
+	 var personaje;
+ 	for (var i in list){
+     	personaje = this._charactersById[list[i]];
+     	render = '<li data-chara- id="' + list[i] + '">' + personaje.name + '(HP: <strong>' + personaje.hp
+     	+ '</strong>/' + personaje.maxHp + ', MP: <strong>' + personaje.mp + '</strong>/' + personaje.maxMp +') </li>';
+
+     	if (personaje.party === 'heroes')
+        	lchara[0].innerHTML += render;
+  
+     	else 
+         	lchara[1].innerHTML += render;
+  
+ 	}
     // TODO: highlight current character
+    var pactive = document.querySelector('#' + data.activeCharacterId);
+  	pactive.classList.add('active');
+
     // TODO: show battle actions form
+    //mostramos las opciones con el boton de select action
+    actionForm.style.display = 'inline';
+    var listOptions = this.options.current._group;
+    var actions = actionForm.querySelector('.choices');
+    
+    for(var i in listOptions){
+    	render =  '<li><label><input type="radio" name="option" value="' + i + '"required>' + i + '</label></li>';
+    	actions.innerHTML += render;
+    }
+ 	
+ 	
 });
 
 battle.on('info', function (data) {
