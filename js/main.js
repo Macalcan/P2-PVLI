@@ -69,7 +69,7 @@ battle.on('turn', function (data) {
 
     // TODO: show battle actions form
     //mostramos las opciones con el boton de select action
- 	;
+ 	
 
     actionForm.style.display = 'inline';
     var listOptions = this.options.current._group;
@@ -81,11 +81,15 @@ battle.on('turn', function (data) {
     	actions.innerHTML += render;
 
     }
-
-
-    /*if(action === 'attack'){
-    	targetForm.style.display = 'block';
-    }*/
+    
+    targetForm.style.display = 'none';
+    var listTargets = this._charactersById;
+    var targets = targetForm.querySelector('.choices');
+    targets.innerHTML = "";
+    for(var i in listTargets){
+    	render =  '<li><label><input type="radio" name="target" value="' + i + '"required>' + i + '</label></li>';
+    	targets.innerHTML += render;
+    }
  	
 
 });
@@ -116,25 +120,40 @@ window.onload = function () {
         // TODO: select the action chosen by the player
         var action = actionForm.elements['option'].value;
 		battle.options.select(action);
-
+		console.log(action);
         // TODO: hide this menu
         // TODO: go to either select target menu, or to the select spell menu
-        var target = targetForm.elements['option'].value;
-        battle.options.select(target);
+        
+
+        if(action === 'attack'){
+        	actionForm.style.display = 'none';
+        	targetForm.style.display = 'block';
+        }
+
+        //var target = targetForm.elements['option'].value;
+        //battle.options.select(target);
     });
 
     targetForm.addEventListener('submit', function (evt) {
         evt.preventDefault();
         // TODO: select the target chosen by the player
+        var chosenTarget = targetForm.elements['target'].value;
+        battle.options.select(chosenTarget);
+        
         // TODO: hide this menu
+        targetForm.style.display = 'none';
+        actionForm.style.display = 'block';
     });
 
     targetForm.querySelector('.cancel')
     .addEventListener('click', function (evt) {
         evt.preventDefault();
         // TODO: cancel current battle options
+        	battle.options.cancel();
         // TODO: hide this form
+        targetForm.style.display = 'none';
         // TODO: go to select action menu
+         actionForm.style.display = 'block';
     });
 
     spellForm.addEventListener('submit', function (evt) {
