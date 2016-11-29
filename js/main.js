@@ -82,6 +82,7 @@ battle.on('turn', function (data) {
 
     }
     
+    //vista de los targets disponibles
     targetForm.style.display = 'none';
     var listTargets = this._charactersById;
     var targets = targetForm.querySelector('.choices');
@@ -90,7 +91,18 @@ battle.on('turn', function (data) {
     	render =  '<li><label><input type="radio" name="target" value="' + i + '"required>' + i + '</label></li>';
     	targets.innerHTML += render;
     }
- 	
+
+    //vista de los hechizos disponibles
+    spellForm.style.display = 'none';
+ 	var listSpells = this._grimoires[this._activeCharacter.party];
+ 	console.log(listSpells);
+ 	var spells = spellForm.querySelector('.choices');
+ 	spells.innerHTML = "";
+ 	for(var i in listSpells){
+ 		render =  '<li><label><input type="radio" name="spell" value="' + i + '"required>' + i + '</label></li>';
+ 		spells.innerHTML += render;
+ 		console.log(spells);
+ 	}
 
 });
 
@@ -120,18 +132,20 @@ window.onload = function () {
         // TODO: select the action chosen by the player
         var action = actionForm.elements['option'].value;
 		battle.options.select(action);
-		console.log(action);
+
         // TODO: hide this menu
         // TODO: go to either select target menu, or to the select spell menu
-        
 
+        
         if(action === 'attack'){
         	actionForm.style.display = 'none';
         	targetForm.style.display = 'block';
         }
+        else if (action === 'cast'){
+        	actionForm.style.display = 'none';
+        	spellForm.style.display = 'block';
+        }
 
-        //var target = targetForm.elements['option'].value;
-        //battle.options.select(target);
     });
 
     targetForm.addEventListener('submit', function (evt) {
@@ -159,16 +173,28 @@ window.onload = function () {
     spellForm.addEventListener('submit', function (evt) {
         evt.preventDefault();
         // TODO: select the spell chosen by the player
+        var chosenSpell = spellForm.elements['spell'].value;
+        //console.log(chosenSpell);
+        battle.options.select(chosenSpell);
         // TODO: hide this menu
+        spellForm.style.display = 'none';
+        
         // TODO: go to select target menu
+        targetForm.style.display = 'block';
+        battle.options.select(chosenTarget);
+        targetForm.style.display = 'none';
+        actionForm.style.display = 'block';
     });
 
     spellForm.querySelector('.cancel')
     .addEventListener('click', function (evt) {
         evt.preventDefault();
         // TODO: cancel current battle options
+        battle.options.cancel();
         // TODO: hide this form
+        spellForm.style.display = 'none';
         // TODO: go to select action menu
+         actionForm.style.display = 'block';
     });
 
     battle.start();
