@@ -41,12 +41,16 @@ battle.on('turn', function (data) {
     // TODO: render the characters
     //querySelector te da todos los atributos que tienen las entidades y dentro del for estamos
  	//escribiendo en el HTML todos los atributos(hp y mp) de los personajes y con el .party
+	
+
  	//nos lo escribe en la columna a la que pertenecen.
     var list = Object.keys (this._charactersById);
  	var lchara = document.querySelectorAll('.character-list');
  	var render;
 	var personaje;
-	 
+	//ponemos lo valores lchara como vacios para escribir sobre ellos sin que escriba todo el historial de personajes
+	lchara[0].innerHTML = "";
+	lchara[1].innerHTML = "";
  	for (var i in list){
      	personaje = this._charactersById[list[i]];
      	render = '<li data-chara- id="' + list[i] + '">' + personaje.name + '(HP: <strong>' + personaje.hp
@@ -65,14 +69,23 @@ battle.on('turn', function (data) {
 
     // TODO: show battle actions form
     //mostramos las opciones con el boton de select action
+ 	;
+
     actionForm.style.display = 'inline';
     var listOptions = this.options.current._group;
     var actions = actionForm.querySelector('.choices');
     
+    actions.innerHTML = "";
     for(var i in listOptions){
     	render =  '<li><label><input type="radio" name="option" value="' + i + '"required>' + i + '</label></li>';
     	actions.innerHTML += render;
+
     }
+
+
+    /*if(action === 'attack'){
+    	targetForm.style.display = 'block';
+    }*/
  	
 
 });
@@ -90,6 +103,7 @@ battle.on('end', function (data) {
     // TODO: display 'end of battle' message, showing who won
 });
 
+
 window.onload = function () {
     actionForm = document.querySelector('form[name=select-action]');
     targetForm = document.querySelector('form[name=select-target]');
@@ -105,6 +119,8 @@ window.onload = function () {
 
         // TODO: hide this menu
         // TODO: go to either select target menu, or to the select spell menu
+        var target = targetForm.elements['option'].value;
+        battle.options.select(target);
     });
 
     targetForm.addEventListener('submit', function (evt) {
