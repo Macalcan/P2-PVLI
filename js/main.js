@@ -104,6 +104,13 @@ battle.on('turn', function (data) {
  		console.log(spells);
  	}
 
+
+    if(spellForm.elements.spell === undefined){
+           document.getElementById('b').disabled = true;
+        }
+    else {
+            document.getElementById('b').disabled = false;
+    }
 });
 
 battle.on('info', function (data) {
@@ -124,7 +131,7 @@ window.onload = function () {
     actionForm = document.querySelector('form[name=select-action]');
     targetForm = document.querySelector('form[name=select-target]');
     spellForm = document.querySelector('form[name=select-spell]');
-    var button = document.querySelector('button[name=button]')
+    
     infoPanel = document.querySelector('#battle-info');
 
 
@@ -172,14 +179,11 @@ window.onload = function () {
          actionForm.style.display = 'block';
     });
 
-    if(spellForm.elements.spell === undefined){
-           document.getElementById('b').disabled = true;
-        }
-    else {
+
     spellForm.addEventListener('submit', function (evt) {
         evt.preventDefault();
-
         
+
         // TODO: select the spell chosen by the player
         var chosenSpell = spellForm.elements['spell'].value;
 
@@ -193,8 +197,8 @@ window.onload = function () {
         battle.options.select(chosenTarget);
         targetForm.style.display = 'none';
         actionForm.style.display = 'block';
-
-    });}
+      
+    });
 
     spellForm.querySelector('.cancel')
     .addEventListener('click', function (evt) {
