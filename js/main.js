@@ -124,7 +124,9 @@ window.onload = function () {
     actionForm = document.querySelector('form[name=select-action]');
     targetForm = document.querySelector('form[name=select-target]');
     spellForm = document.querySelector('form[name=select-spell]');
+    var button = document.querySelector('button[name=button]')
     infoPanel = document.querySelector('#battle-info');
+
 
     actionForm.addEventListener('submit', function (evt) {
         evt.preventDefault();
@@ -170,10 +172,17 @@ window.onload = function () {
          actionForm.style.display = 'block';
     });
 
+    if(spellForm.elements.spell === undefined){
+           document.getElementById('b').disabled = true;
+        }
+    else {
     spellForm.addEventListener('submit', function (evt) {
         evt.preventDefault();
+
+        
         // TODO: select the spell chosen by the player
         var chosenSpell = spellForm.elements['spell'].value;
+
         //console.log(chosenSpell);
         battle.options.select(chosenSpell);
         // TODO: hide this menu
@@ -184,7 +193,8 @@ window.onload = function () {
         battle.options.select(chosenTarget);
         targetForm.style.display = 'none';
         actionForm.style.display = 'block';
-    });
+
+    });}
 
     spellForm.querySelector('.cancel')
     .addEventListener('click', function (evt) {
@@ -196,6 +206,8 @@ window.onload = function () {
         // TODO: go to select action menu
          actionForm.style.display = 'block';
     });
+
+    
 
     battle.start();
 };
