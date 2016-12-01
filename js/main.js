@@ -95,13 +95,13 @@ battle.on('turn', function (data) {
     //vista de los hechizos disponibles
     spellForm.style.display = 'none';
  	var listSpells = this._grimoires[this._activeCharacter.party];
- 	console.log(listSpells);
+ 	
  	var spells = spellForm.querySelector('.choices');
  	spells.innerHTML = "";
  	for(var i in listSpells){
  		render =  '<li><label><input type="radio" name="spell" value="' + i + '"required>' + i + '</label></li>';
  		spells.innerHTML += render;
- 		console.log(spells);
+ 		
  	}
 
 
@@ -111,11 +111,18 @@ battle.on('turn', function (data) {
     else {
             document.getElementById('b').disabled = false;
     }
+
+
 });
 
 battle.on('info', function (data) {
     console.log('INFO', data);
-
+    var effectsTxt = prettifyEffect(data.effect || {});
+    if(data.action === 'attack' && data.success)
+       infoPanel.innerHTML = '<strong>' + data.activeCharacterId + '</strong>' + " " + data.action + "ed" + " " +  '<strong>' + data.targetId + '</strong>' + "  and caused " + effectsTxt   ;
+//	var effectsTxt = document.getElementById('battle-info');
+//	effectsTxt = '<p id="battle-info"> Holaaaaaaaa!!!!</p>';
+console.log(infoPanel);
     // TODO: display turn info in the #battle-info panel
 });
 
