@@ -66,7 +66,7 @@ battle.on('turn', function (data) {
   
  	}
     // TODO: highlight current character
-    var pactive = document.querySelector('#' + data.activeCharacterId);
+    var pactive = document.getElementById(data.activeCharacterId);
     if(personaje._hp === 0)
   	pactive.classList.add('dead');
   	pactive.classList.add('active');
