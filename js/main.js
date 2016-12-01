@@ -113,13 +113,32 @@ battle.on('turn', function (data) {
     }
 
 
+
 });
 
 battle.on('info', function (data) {
     console.log('INFO', data);
+
     var effectsTxt = prettifyEffect(data.effect || {});
+
     if(data.action === 'attack' && data.success)
-       infoPanel.innerHTML = '<strong>' + data.activeCharacterId + '</strong>' + " " + data.action + "ed" + " " +  '<strong>' + data.targetId + '</strong>' + "  and caused " + effectsTxt   ;
+       infoPanel.innerHTML = '<strong>' + data.activeCharacterId + '</strong>' + " " + data.action + "ed" + " " +  '<strong>' + data.targetId + '</strong>' + "  and caused " + effectsTxt + "."  ;
+
+   else if(data.action === 'attack' && !data.success)
+   		infoPanel.innerHTML = '<strong>' + data.activeCharacterId + '</strong>' + " has failed.";
+
+   	else if(data.action === 'defend' && data.success)
+   		infoPanel.innerHTML = '<strong>' + data.activeCharacterId + '</strong>' + " " + data.action + "ed, new defense is " + data.newDefense + ".";
+
+   	 else if(data.action === 'defend' && !data.success)
+   		infoPanel.innerHTML = '<strong>' + data.activeCharacterId + '</strong>' + " has failed.";
+
+   	else if(data.action === 'cast' && data.success)
+       infoPanel.innerHTML = '<strong>' + data.activeCharacterId + '</strong>' + " " + data.action + "ed" + " " + data.scrollName + " on " +'<strong>' + data.targetId + '</strong>' + "  and caused " + effectsTxt + "."  ;
+
+    else if(data.action === 'cast' && !data.success)
+    	infoPanel.innerHTML = '<strong>' + data.activeCharacterId + '</strong>' + " has failed.";
+
 //	var effectsTxt = document.getElementById('battle-info');
 //	effectsTxt = '<p id="battle-info"> Holaaaaaaaa!!!!</p>';
 console.log(infoPanel);
@@ -204,6 +223,7 @@ window.onload = function () {
         battle.options.select(chosenTarget);
         targetForm.style.display = 'none';
         actionForm.style.display = 'block';
+
       
     });
 
