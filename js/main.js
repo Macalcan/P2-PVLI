@@ -61,12 +61,19 @@ battle.on('turn', function (data) {
   
      	else 
          	lchara[1].innerHTML += render;
+
+	
   
  	}
     // TODO: highlight current character
     var pactive = document.querySelector('#' + data.activeCharacterId);
+    if(personaje._hp === 0)
+  	pactive.classList.add('dead');
   	pactive.classList.add('active');
+  	console.log(personaje);
+  	
 
+console.log(personaje);
     // TODO: show battle actions form
     //mostramos las opciones con el boton de select action
  	
@@ -139,15 +146,16 @@ battle.on('info', function (data) {
     else if(data.action === 'cast' && !data.success)
     	infoPanel.innerHTML = '<strong>' + data.activeCharacterId + '</strong>' + " has failed.";
 
+
 //	var effectsTxt = document.getElementById('battle-info');
 //	effectsTxt = '<p id="battle-info"> Holaaaaaaaa!!!!</p>';
-console.log(infoPanel);
+//console.log(infoPanel);
     // TODO: display turn info in the #battle-info panel
 });
 
 battle.on('end', function (data) {
     console.log('END', data);
-
+	infoPanel.innerHTML = "Battle is over! Winners were: " +'<strong>' + data.winner + '</strong>';
     // TODO: re-render the parties so the death of the last character gets reflected
     // TODO: display 'end of battle' message, showing who won
 });
@@ -212,7 +220,7 @@ window.onload = function () {
 
         // TODO: select the spell chosen by the player
         var chosenSpell = spellForm.elements['spell'].value;
-
+		console.log (spellForm.elements);
         //console.log(chosenSpell);
         battle.options.select(chosenSpell);
         // TODO: hide this menu
