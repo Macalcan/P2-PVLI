@@ -48,32 +48,43 @@ battle.on('turn', function (data) {
  	var lchara = document.querySelectorAll('.character-list');
  	var render;
 	var personaje;
+
 	//ponemos lo valores lchara como vacios para escribir sobre ellos sin que escriba todo el historial de personajes
 	lchara[0].innerHTML = "";
 	lchara[1].innerHTML = "";
+   
+  
  	for (var i in list){
      	personaje = this._charactersById[list[i]];
-     	render = '<li data-chara- id="' + list[i] + '">' + personaje.name + '(HP: <strong>' + personaje.hp
-     	+ '</strong>/' + personaje.maxHp + ', MP: <strong>' + personaje.mp + '</strong>/' + personaje.maxMp +') </li>';
-
-     	if (personaje.party === 'heroes')
+       
+       if(personaje.hp <= 0){
+            render = '<li data-chara- id="' + list[i] + '"class = "dead"' + '">' + personaje.name + '(HP: <strong>' + personaje.hp
+            + '</strong>/' + personaje.maxHp + ', MP: <strong>' + personaje.mp + '</strong>/' + personaje.maxMp +') </li>';
+       }
+       else{
+            render = '<li data-chara- id="' + list[i] + '">' + personaje.name + '(HP: <strong>' + personaje.hp
+            + '</strong>/' + personaje.maxHp + ', MP: <strong>' + personaje.mp + '</strong>/' + personaje.maxMp +') </li>';
+       }
+     	
+        
+     	if (personaje.party === 'heroes'){
         	lchara[0].innerHTML += render;
+        }
+
   
-     	else 
+     	else {
          	lchara[1].innerHTML += render;
+           
+        }
+    
+ }
+     
 
-	
-  
- 	}
-    // TODO: highlight current character
     var pactive = document.getElementById(data.activeCharacterId);
-    if(personaje._hp === 0)
-  	pactive.classList.add('dead');
   	pactive.classList.add('active');
-  	console.log(personaje);
-  	
 
-console.log(personaje);
+
+
     // TODO: show battle actions form
     //mostramos las opciones con el boton de select action
  	
@@ -125,7 +136,7 @@ console.log(personaje);
 
 battle.on('info', function (data) {
     console.log('INFO', data);
-
+    // TODO: display turn info in the #battle-info panel
     var effectsTxt = prettifyEffect(data.effect || {});
 
     if(data.action === 'attack' && data.success)
@@ -147,17 +158,48 @@ battle.on('info', function (data) {
     	infoPanel.innerHTML = '<strong>' + data.activeCharacterId + '</strong>' + " has failed.";
 
 
-//	var effectsTxt = document.getElementById('battle-info');
-//	effectsTxt = '<p id="battle-info"> Holaaaaaaaa!!!!</p>';
-//console.log(infoPanel);
-    // TODO: display turn info in the #battle-info panel
 });
 
 battle.on('end', function (data) {
     console.log('END', data);
-	infoPanel.innerHTML = "Battle is over! Winners were: " +'<strong>' + data.winner + '</strong>';
+	
     // TODO: re-render the parties so the death of the last character gets reflected
+    var list = Object.keys (this._charactersById);
+    var lchara = document.querySelectorAll('.character-list');
+    var render;
+    var personaje;
+
+    //ponemos lo valores lchara como vacios para escribir sobre ellos sin que escriba todo el historial de personajes
+    lchara[0].innerHTML = "";
+    lchara[1].innerHTML = "";
+   
+  
+    for (var i in list){
+        personaje = this._charactersById[list[i]];
+       
+       if(personaje.hp <= 0){
+            render = '<li data-chara- id="' + list[i] + '"class = "dead"' + '">' + personaje.name + '(HP: <strong>' + personaje.hp
+            + '</strong>/' + personaje.maxHp + ', MP: <strong>' + personaje.mp + '</strong>/' + personaje.maxMp +') </li>';
+       }
+       else{
+            render = '<li data-chara- id="' + list[i] + '">' + personaje.name + '(HP: <strong>' + personaje.hp
+            + '</strong>/' + personaje.maxHp + ', MP: <strong>' + personaje.mp + '</strong>/' + personaje.maxMp +') </li>';
+       }
+        
+        
+        if (personaje.party === 'heroes'){
+            lchara[0].innerHTML += render;
+        }
+
+  
+        else {
+            lchara[1].innerHTML += render;
+           
+        }
+    
+ }
     // TODO: display 'end of battle' message, showing who won
+    infoPanel.innerHTML = "The battle is over! Winners are: " +'<strong>' + data.winner + '</strong>';
 });
 
 
