@@ -50,6 +50,8 @@ battle.on('turn', function (data) {
     var goodHeroe;
 	var personaje;
     var random;
+    var hayHeroe = false;
+    var hayMonster = false;
 	//ponemos lo valores lchara como vacios para escribir sobre ellos sin que escriba todo el historial de personajes
 	lchara[0].innerHTML = "";
 	lchara[1].innerHTML = "";
@@ -66,21 +68,24 @@ battle.on('turn', function (data) {
             render = '<li data-chara- id="' + list[i] + '">' + personaje.name + '(HP: <strong>' + personaje.hp
             + '</strong>/' + personaje.maxHp + ', MP: <strong>' + personaje.mp + '</strong>/' + personaje.maxMp +') </li>';
        }
-     	
+     	//random para decidir si un personaje es heroe o monstrue
         random = Math.random();
         if(random <= 0.5){
-            goodHeroe = false;
+            goodHeroe = false; //es monstruo
         }
         else{
-            goodHeroe = true;
+            goodHeroe = true; //es heroe
         }
-       
-        if (goodHeroe){
+       //evitamos que se quede una party sin nigun personaje y que al menos tenga uno a base de comprobar que en la ultima vuelta
+       //no ha quedado ninguno vacio y en ese caso lo rellenamos con el ultimo personaje
+        if ((i === list.length - 1 && hayMonster && !hayHeroe) || goodHeroe){
             lchara[0].innerHTML += render;
+            hayHeroe = true;
         }
 
         else {
             lchara[1].innerHTML += render;
+            hayMonster = true;
            
         }
      	/*if (personaje.party === 'heroes'){
