@@ -75,10 +75,9 @@ battle.on('turn', function (data) {
         }
         else{
             goodHeroe = true; //es heroe
+
         }
-       //evitamos que se quede una party sin nigun personaje y que al menos tenga uno a base de comprobar que en la ultima vuelta
-       //no ha quedado ninguno vacio y en ese caso lo rellenamos con el ultimo personaje
-        if ((i === list.length - 1 && hayMonster && !hayHeroe) || goodHeroe){
+        /*if (personaje.party === 'heroes'){
             lchara[0].innerHTML += render;
             hayHeroe = true;
         }
@@ -86,6 +85,20 @@ battle.on('turn', function (data) {
         else {
             lchara[1].innerHTML += render;
             hayMonster = true;
+           
+        }*/
+       //evitamos que se quede una party sin nigun personaje y que al menos tenga uno a base de comprobar que en la ultima vuelta
+       //no ha quedado ninguno vacio y en ese caso lo rellenamos con el ultimo personaje
+        if ((i === list.length - 1 && hayMonster && !hayHeroe) || goodHeroe){
+            lchara[0].innerHTML += render;
+            hayHeroe = true;
+            personaje.party = 'heroes';
+        }
+
+        else {
+            lchara[1].innerHTML += render;
+            hayMonster = true;
+            personaje.party = 'monsters';
            
         }
      	/*if (personaje.party === 'heroes'){
