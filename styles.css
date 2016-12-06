@@ -63,6 +63,14 @@ button, input, select {
     text-decoration: line-through;
 }
 
+.heroes{
+     background: rgba(153, 255, 0, 0.5);
+}
+
+.monsters{
+    background: rgba(255, 51, 0, 0.5);
+}
+
 .active {
     background: rgba(255, 255, 0, 0.5);
 }

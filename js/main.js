@@ -101,13 +101,21 @@ battle.on('turn', function (data) {
     }
     
     //vista de los targets disponibles
+
     targetForm.style.display = 'none';
     var listTargets = this._charactersById;
     var targets = targetForm.querySelector('.choices');
     targets.innerHTML = "";
     for(var i in listTargets){
-    	render =  '<li><label><input type="radio" name="target" value="' + i + '"required>' + i + '</label></li>';
+        if(listTargets[i].party === 'heroes'){
+    	render =  '<li><label class="heroes"><input type="radio"  name="target"  value="' + i +  ' "required>' + i + '</label></li>';
     	targets.innerHTML += render;
+        console.log(render);
+         }
+        else{
+            render =  '<li><label class="monsters"><input type="radio" class = "monsters" name="target"  value="' + i +  ' "required>' + i + '</label></li>';
+            targets.innerHTML += render;
+        }
     }
 
     //vista de los hechizos disponibles
@@ -117,7 +125,7 @@ battle.on('turn', function (data) {
  	var spells = spellForm.querySelector('.choices');
  	spells.innerHTML = "";
  	for(var i in listSpells){
- 		render =  '<li><label><input type="radio" name="spell" value="' + i + '"required>' + i + '</label></li>';
+ 		render =  '<li><label><input type="radio" name="spell" value="' + i + ' "class=color(i)"'+ '"required>' + i + '</label></li>';
  		spells.innerHTML += render;
  		
  	}
