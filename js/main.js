@@ -47,8 +47,9 @@ battle.on('turn', function (data) {
     var list = Object.keys (this._charactersById);
  	var lchara = document.querySelectorAll('.character-list');
  	var render;
+    var goodHeroe;
 	var personaje;
-
+    var random;
 	//ponemos lo valores lchara como vacios para escribir sobre ellos sin que escriba todo el historial de personajes
 	lchara[0].innerHTML = "";
 	lchara[1].innerHTML = "";
@@ -66,8 +67,23 @@ battle.on('turn', function (data) {
             + '</strong>/' + personaje.maxHp + ', MP: <strong>' + personaje.mp + '</strong>/' + personaje.maxMp +') </li>';
        }
      	
-        
-     	if (personaje.party === 'heroes'){
+        random = Math.random();
+        if(random <= 0.5){
+            goodHeroe = false;
+        }
+        else{
+            goodHeroe = true;
+        }
+       
+        if (goodHeroe){
+            lchara[0].innerHTML += render;
+        }
+
+        else {
+            lchara[1].innerHTML += render;
+           
+        }
+     	/*if (personaje.party === 'heroes'){
         	lchara[0].innerHTML += render;
         }
 
@@ -75,7 +91,7 @@ battle.on('turn', function (data) {
      	else {
          	lchara[1].innerHTML += render;
            
-        }
+        }*/
     
  }
      
