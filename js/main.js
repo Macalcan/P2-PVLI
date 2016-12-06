@@ -1,5 +1,5 @@
 var battle = new RPG.Battle();
-var actionForm, spellForm, targetForm;
+var actionForm, spellForm, targetForm, realoadForm;
 var infoPanel;
 
 function prettifyEffect(obj) {
@@ -42,6 +42,7 @@ battle.on('turn', function (data) {
     //querySelector te da todos los atributos que tienen las entidades y dentro del for estamos
  	//escribiendo en el HTML todos los atributos(hp y mp) de los personajes y con el .party
 	
+    
 
  	//nos lo escribe en la columna a la que pertenecen.
     var list = Object.keys (this._charactersById);
@@ -56,7 +57,7 @@ battle.on('turn', function (data) {
 	lchara[0].innerHTML = "";
 	lchara[1].innerHTML = "";
    
-  
+    var cont = 0;
  	for (var i in list){
      	personaje = this._charactersById[list[i]];
        
@@ -70,6 +71,7 @@ battle.on('turn', function (data) {
        }
      	//random para decidir si un personaje es heroe o monstrue
         random = Math.random();
+        
         if(random <= 0.5){
             goodHeroe = false; //es monstruo
         }
@@ -77,25 +79,24 @@ battle.on('turn', function (data) {
             goodHeroe = true; //es heroe
 
         }
-        /*if (personaje.party === 'heroes'){
-            lchara[0].innerHTML += render;
-            hayHeroe = true;
-        }
-
-        else {
-            lchara[1].innerHTML += render;
-            hayMonster = true;
-           
-        }*/
+        
        //evitamos que se quede una party sin nigun personaje y que al menos tenga uno a base de comprobar que en la ultima vuelta
        //no ha quedado ninguno vacio y en ese caso lo rellenamos con el ultimo personaje
-        if ((i === list.length - 1 && hayMonster && !hayHeroe) || goodHeroe){
+       
+       if(cont === list.length - 1 && !hayHeroe){
+        goodHeroe = true;
+       }
+       else if(cont === list.length - 1 && !hayMonster){
+        goodHeroe = false;
+       }
+
+        if (goodHeroe){
             lchara[0].innerHTML += render;
             hayHeroe = true;
             personaje.party = 'heroes';
         }
 
-        else {
+        else  {
             lchara[1].innerHTML += render;
             hayMonster = true;
             personaje.party = 'monsters';
@@ -110,6 +111,7 @@ battle.on('turn', function (data) {
          	lchara[1].innerHTML += render;
            
         }*/
+        cont++;
     
  }
      
@@ -144,8 +146,7 @@ battle.on('turn', function (data) {
         if(listTargets[i].party === 'heroes'){
     	render =  '<li><label class="heroes"><input type="radio"  name="target"  value="' + i +  ' "required>' + i + '</label></li>';
     	targets.innerHTML += render;
-        console.log(render);
-         }
+        }
         else{
             render =  '<li><label class="monsters"><input type="radio" class = "monsters" name="target"  value="' + i +  ' "required>' + i + '</label></li>';
             targets.innerHTML += render;
@@ -242,6 +243,10 @@ battle.on('end', function (data) {
  }
     // TODO: display 'end of battle' message, showing who won
     infoPanel.innerHTML = "The battle is over! Winners are: " +'<strong>' + data.winner + '</strong>';
+   
+    //document.getElementById('r').disabled = true;
+    realoadForm.style.display = 'block';
+
 });
 
 
@@ -249,10 +254,10 @@ window.onload = function () {
     actionForm = document.querySelector('form[name=select-action]');
     targetForm = document.querySelector('form[name=select-target]');
     spellForm = document.querySelector('form[name=select-spell]');
-    
+    realoadForm = document.querySelector('form[name=reload-page]');
     infoPanel = document.querySelector('#battle-info');
 
-
+    realoadForm.style.display = 'none';
     actionForm.addEventListener('submit', function (evt) {
         evt.preventDefault();
 
