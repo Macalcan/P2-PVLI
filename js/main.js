@@ -1,6 +1,9 @@
 var battle = new RPG.Battle();
-var actionForm, spellForm, targetForm, realoadForm;
+var actionForm, spellForm, targetForm;
 var infoPanel;
+//arrays para la creacion de parties aleatorias
+var partyHeroes = [];
+var partyMonsters = [];
 
 function prettifyEffect(obj) {
     return Object.keys(obj).map(function (key) {
@@ -9,31 +12,69 @@ function prettifyEffect(obj) {
     }).join(', ');
 }
 
+//crea un numero random entre un minimo y un maximo
+function newRandom(min, max){
+        var random = Math.floor(Math.random() * (max - min)) + min;
+        return random;
+};
+
+//creamos la longitud del array y luego rellenamos de forma aleatoria las posiciones con heroes
+partyHeroes.length = newRandom(2, 5);
+    for(var i = 0; i < partyHeroes.length; i++){
+        var random = newRandom(1, 3);
+        if(random === 1){
+            partyHeroes[i] = RPG.entities.characters.heroTank;
+        }
+        else{
+            partyHeroes[i] = RPG.entities.characters.heroWizard;
+        }
+}
+
+//creamos la longitud del array y luego rellenamos de forma aleatoria las posiciones con monstruos
+partyMonsters.length = newRandom(4, 7);
+    for(var i = 0; i < partyHeroes.length; i++){
+        var random = newRandom(1, 4);
+        if(random === 1){
+            partyMonsters[i] = RPG.entities.characters.monsterSlime;
+        }
+        else if(random === 2){
+            partyMonsters[i] = RPG.entities.characters.monsterBat;
+        }
+        else {
+            partyMonsters[i] = RPG.entities.characters.monsterSkeleton;
+        }
+
+}
 
 battle.setup({
     heroes: {
-        members: [
+    	//igualamos los miembros de heroes al array partyHeroes para que sea aleatorio
+        members: partyHeroes, /*[
             RPG.entities.characters.heroTank,
             RPG.entities.characters.heroWizard
-        ],
+        ],*/
         grimoire: [
             RPG.entities.scrolls.health,
             RPG.entities.scrolls.fireball
         ]
     },
+    //igualamos los miembros de heroes al array partyMonsters para que sea aleatorio
     monsters: {
-        members: [
+        members: partyMonsters,/*[
             RPG.entities.characters.monsterSlime,
             RPG.entities.characters.monsterBat,
             RPG.entities.characters.monsterSkeleton,
             RPG.entities.characters.monsterBat
-        ]
+        ]*/
     }
 });
 
-battle.on('start', function (data) {
 
+
+battle.on('start', function (data) {
     console.log('START', data);
+
+
 });
 
 battle.on('turn', function (data) {
@@ -42,25 +83,21 @@ battle.on('turn', function (data) {
     //querySelector te da todos los atributos que tienen las entidades y dentro del for estamos
  	//escribiendo en el HTML todos los atributos(hp y mp) de los personajes y con el .party
 	
-    
 
  	//nos lo escribe en la columna a la que pertenecen.
     var list = Object.keys (this._charactersById);
  	var lchara = document.querySelectorAll('.character-list');
  	var render;
-    var goodHeroe;
 	var personaje;
-    var random;
-    var hayHeroe = false;
-    var hayMonster = false;
+
 	//ponemos lo valores lchara como vacios para escribir sobre ellos sin que escriba todo el historial de personajes
 	lchara[0].innerHTML = "";
 	lchara[1].innerHTML = "";
-   
-    var cont = 0;
+  
+  
  	for (var i in list){
      	personaje = this._charactersById[list[i]];
-       
+       //si un personaje esta muerto se le añade la clase dead al renderizar sino se renderiza de manera normal
        if(personaje.hp <= 0){
             render = '<li data-chara- id="' + list[i] + '"class = "dead"' + '">' + personaje.name + '(HP: <strong>' + personaje.hp
             + '</strong>/' + personaje.maxHp + ', MP: <strong>' + personaje.mp + '</strong>/' + personaje.maxMp +') </li>';
@@ -68,41 +105,11 @@ battle.on('turn', function (data) {
        else{
             render = '<li data-chara- id="' + list[i] + '">' + personaje.name + '(HP: <strong>' + personaje.hp
             + '</strong>/' + personaje.maxHp + ', MP: <strong>' + personaje.mp + '</strong>/' + personaje.maxMp +') </li>';
+            
        }
-     	//random para decidir si un personaje es heroe o monstrue
-        random = Math.random();
-        
-        if(random <= 0.5){
-            goodHeroe = false; //es monstruo
-        }
-        else{
-            goodHeroe = true; //es heroe
-
-        }
-        
-       //evitamos que se quede una party sin nigun personaje y que al menos tenga uno a base de comprobar que en la ultima vuelta
-       //no ha quedado ninguno vacio y en ese caso lo rellenamos con el ultimo personaje
-       
-       if(cont === list.length - 1 && !hayHeroe){
-        goodHeroe = true;
-       }
-       else if(cont === list.length - 1 && !hayMonster){
-        goodHeroe = false;
-       }
-
-        if (goodHeroe){
-            lchara[0].innerHTML += render;
-            hayHeroe = true;
-            personaje.party = 'heroes';
-        }
-
-        else  {
-            lchara[1].innerHTML += render;
-            hayMonster = true;
-            personaje.party = 'monsters';
-           
-        }
-     	/*if (personaje.party === 'heroes'){
+     	
+        //se renderiza en la seccion de heroes o en monsters
+     	if (personaje.party === 'heroes'){
         	lchara[0].innerHTML += render;
         }
 
@@ -110,12 +117,13 @@ battle.on('turn', function (data) {
      	else {
          	lchara[1].innerHTML += render;
            
-        }*/
-        cont++;
+        }
+
+
     
  }
      
-
+ 	//se le añade la clase active al personaje en su turno
     var pactive = document.getElementById(data.activeCharacterId);
   	pactive.classList.add('active');
 
@@ -137,20 +145,20 @@ battle.on('turn', function (data) {
     }
     
     //vista de los targets disponibles
-
     targetForm.style.display = 'none';
     var listTargets = this._charactersById;
     var targets = targetForm.querySelector('.choices');
     targets.innerHTML = "";
     for(var i in listTargets){
-        if(listTargets[i].party === 'heroes'){
-    	render =  '<li><label class="heroes"><input type="radio"  name="target"  value="' + i +  ' "required>' + i + '</label></li>';
-    	targets.innerHTML += render;
-        }
-        else{
-            render =  '<li><label class="monsters"><input type="radio" class = "monsters" name="target"  value="' + i +  ' "required>' + i + '</label></li>';
-            targets.innerHTML += render;
-        }
+    	//si un target esta muerto no aparece en la lista de opciones puesto que no se le puede atacar
+    	if(listTargets[i].party == 'heroes' && listTargets[i].hp !== 0){
+    		render =  '<li><label class="heroes"><input type="radio" name="target" value="' + i + '"required>' + i + '</label></li>';
+    		targets.innerHTML += render;
+    	}
+    	else if(listTargets[i].hp !== 0){
+    		render =  '<li><label class="monsters"><input type="radio" name="target" value="' + i + '"required>' + i + '</label></li>';
+    		targets.innerHTML += render;
+    	}
     }
 
     //vista de los hechizos disponibles
@@ -160,20 +168,20 @@ battle.on('turn', function (data) {
  	var spells = spellForm.querySelector('.choices');
  	spells.innerHTML = "";
  	for(var i in listSpells){
- 		render =  '<li><label><input type="radio" name="spell" value="' + i + ' "class=color(i)"'+ '"required>' + i + '</label></li>';
+ 		render =  '<li><label><input type="radio" name="spell" value="' + i + '"required>' + i + '</label></li>';
  		spells.innerHTML += render;
+
  		
  	}
-
-
-    if(spellForm.elements.spell === undefined){
-           document.getElementById('b').disabled = true;
-        }
-    else {
-            document.getElementById('b').disabled = false;
+   
+ 	//el boton para castear un hechizo se desactiva si no hay mana suficiente (el minimo es 10 para health) o si el personaje no lanza hechizos 
+    if(this._activeCharacter._mp <= 10 || spellForm.elements.spell === undefined){
+        document.getElementById('b').disabled = true;
     }
-
-
+    else {
+        document.getElementById('b').disabled = false;
+    }
+            
 
 });
 
@@ -242,10 +250,9 @@ battle.on('end', function (data) {
     
  }
     // TODO: display 'end of battle' message, showing who won
-    infoPanel.innerHTML = "The battle is over! Winners are: " +'<strong>' + data.winner + '</strong>';
-   
-    //document.getElementById('r').disabled = true;
-    realoadForm.style.display = 'block';
+    //tambien muestra un boton para volver a jugar
+    infoPanel.innerHTML = "The battle is over! Winners are: " +'<strong>' + data.winner + ' </strong><button type="submit" onClick="history.go(0)">Play again!</button>';
+    
 
 });
 
@@ -254,10 +261,10 @@ window.onload = function () {
     actionForm = document.querySelector('form[name=select-action]');
     targetForm = document.querySelector('form[name=select-target]');
     spellForm = document.querySelector('form[name=select-spell]');
-    realoadForm = document.querySelector('form[name=reload-page]');
+    
     infoPanel = document.querySelector('#battle-info');
 
-    realoadForm.style.display = 'none';
+
     actionForm.addEventListener('submit', function (evt) {
         evt.preventDefault();
 
