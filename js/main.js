@@ -164,14 +164,14 @@ battle.on('turn', function (data) {
     //vista de los hechizos disponibles
     spellForm.style.display = 'none';
  	var listSpells = this._grimoires[this._activeCharacter.party];
- 	
  	var spells = spellForm.querySelector('.choices');
  	spells.innerHTML = "";
  	for(var i in listSpells){
- 		render =  '<li><label><input type="radio" name="spell" value="' + i + '"required>' + i + '</label></li>';
- 		spells.innerHTML += render;
 
- 		
+        if (this._charactersById[data.activeCharacterId].mp >= listSpells[i].cost) {
+ 	      	render =  '<li><label><input type="radio" name="spell" value="' + i + '"required>' + i + '</label></li>';
+ 		    spells.innerHTML += render;
+        }
  	}
    
  	//el boton para castear un hechizo se desactiva si no hay mana suficiente (el minimo es 10 para health) o si el personaje no lanza hechizos 
