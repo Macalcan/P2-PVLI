@@ -175,7 +175,7 @@ battle.on('turn', function (data) {
  	}
    
  	//el boton para castear un hechizo se desactiva si no hay mana suficiente (el minimo es 10 para health) o si el personaje no lanza hechizos 
-    if(this._activeCharacter._mp <= 10 || spellForm.elements.spell === undefined){
+    if(this._activeCharacter._mp < 10 || spellForm.elements.spell === undefined){
         document.getElementById('b').disabled = true;
     }
     else {
